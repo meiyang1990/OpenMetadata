@@ -1,0 +1,56 @@
+# OpenMetadata Dependencies Helm Chart Values
+# 用于部署内置 OpenSearch
+# 安装命令:
+#   helm repo add open-metadata https://helm.open-metadata.org
+#   helm install openmetadata-dependencies open-metadata/openmetadata-dependencies \
+#     -n bigdata \
+#     -f openmetadata-dependencies-values.yaml
+
+# MySQL 配置 - 已使用外部 MySQL，禁用内置 MySQL
+mysql:
+  enabled: false
+
+# Airflow 配置 - 已禁用 pipeline，不需要 Airflow
+airflow:
+  enabled: false
+
+# OpenSearch 配置 - 开启内置 OpenSearch
+opensearch:
+  enabled: true
+  clusterName: opensearch
+  fullnameOverride: opensearch
+  singleNode: true
+  protocol: http
+
+  # OpenSearch 配置文件
+  config:
+    opensearch.yml: |
+      plugins.security.disabled: true
+      indices.query.bool.max_clause_count: 4096
+
+  # JVM 参数
+  opensearchJavaOpts: "-Xmx1g -Xms1g"
+
+  # 资源配置
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      cpu: "1"
+      memory: "4Gi"
+
+  # 持久化存储
+  persistence:
+    enabled: true
+    size: 30Gi
+    # storageClass: ""  # 使用集群默认 StorageClass
+
+  # 服务配置 - 确保 OpenSearch 服务名与 baidu_k8s.yaml 中 elasticsearch.host 一致
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 9200
+        protocol: TCP
+        targetPort: 9200
