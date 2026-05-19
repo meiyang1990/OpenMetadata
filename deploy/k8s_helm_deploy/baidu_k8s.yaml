@@ -78,9 +78,9 @@ openmetadata:
       evictionInterval: 5 minutes
       minIdleTime: 1 minute
     pipelineServiceClientConfig:
-      enabled: false
+      enabled: true
       # Pipeline service client type - choose between "airflow" or "k8s"
-      type: "airflow"
+      type: "k8s"
 
       # Common configurations for all pipeline service clients
       # This will be the api endpoint url of OpenMetadata Server
@@ -116,9 +116,9 @@ openmetadata:
         namespace: ""
         className: "org.openmetadata.service.clients.pipeline.k8s.K8sPipelineClient"
         # Container image for ingestion jobs
-        ingestionImage: "docker.getcollate.io/openmetadata/ingestion-base:latest"
+        ingestionImage: "ccr-2owfeef4-pub.cnc.bj.baidubce.com/openmetadata/ingestion-base:1.12.6"
         # Image pull policy
-        imagePullPolicy: "IfNotPresent"
+        imagePullPolicy: "Always"
         # Image pull secrets (comma-separated)
         imagePullSecrets: ""
         # Service account name for ingestion jobs
